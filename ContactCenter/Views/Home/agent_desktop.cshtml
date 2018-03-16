@@ -1,0 +1,445 @@
+@using JWT
+@{
+ViewBag.Title = "Agents";
+    
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Owl Agent UI</title>
+
+    <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.4/twilio.min.js"></script>
+    <script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.10/taskrouter.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="//media.twiliocdn.com/taskrouter/quickstart/agent.css"/>
+    <link href="../../Content/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .btn {
+            background: #3498db;
+            background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+            background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+            background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+            background-image: -o-linear-gradient(top, #3498db, #2980b9);
+            background-image: linear-gradient(to bottom, #3498db, #2980b9);
+            -webkit-border-radius: 28px;
+            -moz-border-radius: 28px;
+            border-radius: 28px;
+            font-family: Arial;
+            color: #ffffff;
+            font-size: 20px;
+            padding: 10px 20px 10px 20px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #3cb0fd;
+            background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+            background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+            background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+            background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+            background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+            text-decoration: none;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+         var clientToken =  "@Html.Raw(ViewBag.client_token)";
+        Twilio.Device.setup(clientToken, {debug: true});
+
+        Twilio.Device.ready(function (device) {
+            console.log("Client '{{ client_name }}' is ready");
+        });
+
+        Twilio.Device.error(function (error) {
+            $("#logger").text("Error: " + error.message);
+        });
+
+        Twilio.Device.connect(function (conn) {
+            $("#logger").text("Successfully established call");
+        });
+
+        Twilio.Device.disconnect(function (conn) {
+            $("#logger").text("Call ended");
+        });
+
+        Twilio.Device.incoming(function (conn) {
+            //$("#logger").text("Incoming connection from " + conn.parameters.From);
+            // accept the incoming connection and start two-way audio
+            conn.accept();
+        });
+
+        function call() {
+            // get the phone number or client to connect the call to
+            params = {"PhoneNumber": $("#number").val()};
+            Twilio.Device.connect(params);
+        }
+
+        function hangup() {
+            Twilio.Device.disconnectAll();
+
+            ReservationObject.task.complete();
+
+            worker.update("ActivitySid", activitiesDict["WrapUp"], function (error, worker) {
+                logger(worker.friendlyName + " has ended the call");
+
+                if (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                } else {
+                    console.log(worker.activityName);
+                }
+            });
+
+            document.getElementById("btn_hangup").style.display = "none";
+            document.getElementById("btn_online").style.display = "none";
+            document.getElementById("btn_offline").style.display = "inline";
+            document.getElementById("btn_mute").style.display = "none";
+            document.getElementById("btn_unmute").style.display = "none";
+        }
+
+        function hangupManager() {
+            ReservationObject.task.complete(); //complete the call instruction task
+            //set the manager to wrap up
+            worker.update("ActivitySid",  activitiesDict["WrapUp"], function (error, worker) {
+                if (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                } else {
+                    console.log(worker.activityName);
+                }
+            });
+
+            Twilio.Device.disconnectAll();
+
+            document.getElementById("btn_hangup").style.display = "none";
+            document.getElementById("btn_online").style.display = "none";
+            document.getElementById("btn_offline").style.display = "inline";
+            document.getElementById("btn_mute").style.display = "none";
+            document.getElementById("btn_unmute").style.display = "none";
+        }
+
+
+    </script>
+
+    <script type="text/javascript">
+        //TaskRouter JS code
+        var ReservationObject;
+        var activitiesDict = @Html.Raw(Json.Encode(ViewBag.activties));
+
+        function registerTaskRouterCallbacks() {
+            worker.on('ready', function (worker) {
+                logger("Successfully registered as: " + worker.friendlyName);
+                document.querySelector('h2').innerHTML = "ACME agent desktop: " + worker.friendlyName;
+                if(worker.attributes.hasOwnProperty('skills')) {
+                    logger("Skills: " + worker.attributes['skills']);
+                }
+                if(worker.attributes.hasOwnProperty('languages')) {
+                    logger("Languages: " + worker.attributes['languages']);
+                }
+                logger("Current activity is: " + worker.activityName);
+                updateUIStatus(worker.activityName, worker.available);
+            });
+
+            worker.on('activity.update', function (worker) {
+
+                logger("Worker activity changed to: " + worker.activityName);
+                var workerStatus = worker.activityName;
+                updateUIStatus(worker.activityName, worker.available);
+
+                if (worker.activitySid ===  activitiesDict["WrapUp"]) {
+
+                    if (ReservationObject) {
+                        //console.log("Worker is wrapping up!");
+                        //console.log(ReservationObject);
+                        //  ReservationObject.task.complete();
+                    }
+                }
+
+                if (worker.activityName === "Offline" || worker.activityName === "WrapUp") {
+                    document.getElementById("btn_online").style.display = "inline";
+                    document.getElementById("btn_offline").style.display = "none";
+                }
+            });
+
+            worker.on('reservation.created', function (reservation) {
+                logger("-----");
+                logger("You have been reserved to handle a call!");
+                logger("Call from: " + reservation.task.attributes.from);
+
+                logger("Selected language: " + reservation.task.attributes.selected_language);
+                logger("Customer request: " + reservation.task.attributes.selected_product);
+                if (reservation.task.attributes.selected_product !== "manager"){
+                    logger("Selected language: " + reservation.task.attributes.selected_language);
+
+                }
+                logger("Customer Request: " + reservation.task.attributes.selected_product);
+            
+                logger("-----");
+                logger(reservation.sid);
+                ReservationObject = reservation;
+                document.getElementById("btn_accept").style.display = "inline";
+                document.getElementById("btn_reject").style.display = "inline";
+                document.getElementById("btn_offline").style.display = "none";
+            });
+
+            worker.on('reservation.accepted', function (reservation) {
+                logger("Reservation " + reservation.sid + " accepted!");
+                ReservationObject = reservation; // update reservationObject to contain the updated reservation information/task attributes e.g. conference
+            });
+
+            worker.on('reservation.rejected', function (reservation) {
+                logger("Reservation " + reservation.sid + " rejected!");
+            });
+
+            worker.on('reservation.timeout', function (reservation) {
+                logger("Reservation " + reservation.sid + " timed out!");
+            });
+
+            worker.on('reservation.canceled', function (reservation) {
+                logger("Reservation " + reservation.sid + " canceled!");
+            });
+        }
+
+
+        function goAvailable() {
+
+            // update worker's activity to Idle
+            worker.update("ActivitySid",  activitiesDict["Idle"], function (error, worker) {
+                if (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                } else {
+                    console.log(worker.activityName); // "Idle"
+                }
+            });
+
+            document.getElementById("btn_online").style.display = "none";
+            document.getElementById("btn_offline").style.display = "inline";
+        }
+
+        function goOffline() {
+            // update worker's activity to Offline
+          //  var offlineAct = "Offline";
+            worker.update("ActivitySid", activitiesDict["Offline"], function (error, worker) {
+                if (error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                } else {
+                    console.log(worker.activityName); // "Offline"
+                }
+            });
+
+            document.getElementById("btn_offline").style.display = "none";
+            document.getElementById("btn_mute").style.display = "none";
+            document.getElementById("btn_unmute").style.display = "none";
+            document.getElementById("btn_escalate").style.display = "none";
+
+        }
+
+        function updateUIStatus(activityName, available) {
+            statusDiv = document.getElementById("worker_status").innerText = activityName;
+            if (available === true) {
+                statusDiv = document.getElementById("worker_status").style.color = "#00BB00";
+            } else {
+                statusDiv = document.getElementById("worker_status").style.color = "#BB0000";
+            }
+            if (activityName === "Offline") {
+                document.getElementById("btn_online").style.display = "inline";
+                document.getElementById("btn_offline").style.display = "none";
+                document.getElementById("btn_hangup").style.display = "none";
+                document.getElementById("btn_mute").style.display = "none";
+                document.getElementById("btn_unmute").style.display = "none";
+                document.getElementById("btn_escalate").style.display = "none";
+            }
+        }
+
+        function acceptReservation() {
+            if (ReservationObject.task.attributes.selected_product === "manager") {
+                // Manager escalation, issue call instuction
+                console.log("manager task");
+                console.log(ReservationObject);
+
+                console.log(window.location.protocol + "//" + window.location.host + "/home/transferTwiml?conference=" + ReservationObject.task.attributes.customer_taskSid)
+                
+                ReservationObject.call(
+                    // callFrom
+                    "@Html.Raw(ViewBag.caller_id)",  // CC's phone number
+                    // callUrl - URI that is executed on the answering Worker's leg
+                    window.location.protocol + "//" + window.location.host + "/home/transferTwiml?conference=" + ReservationObject.task.attributes.customer_taskSid,
+                    // callStatusCallbackUrl (optional) - status callback url
+                 //   window.location.protocol + "//" + window.location.host + "/conference_callback",
+                    // callAccept (optional) - accept the task before initiating call
+                    "false",
+                    // callRecord (optional) - record-from-answer or false - false since we're already recoding the main conference
+                    "false",
+                    // resultCallback (optional) - a JavaScript Function that will be called upon the completion of the dial
+                    function (error, reservation) {
+                        if (error) {
+                            console.log(error.code);
+                            console.log(error.message);
+                            return;
+                        }
+                        console.log("reservation called the escalation contact");
+                    }
+                );
+
+                ReservationObject.accept(); // Call instruction requires you to manually accept the Reservation prior to issuing the instruction
+                
+                document.getElementById("btn_hangupManager").style.display = "inline";
+                document.getElementById("btn_escalate").style.display = "none";
+
+                console.log(ReservationObject.task.attributes.customer, ReservationObject.task.attributes.conference);
+                unmuteCaller(ReservationObject.task.attributes.customer, ReservationObject.task.attributes.conference);
+            }
+            else {
+                
+                // not a transfer, simply create a new conference and join customer and worker into it
+                var options = {
+                    "From": "@Html.Raw(ViewBag.caller_id)",  // CC's phone number
+                    "PostWorkActivitySid": activitiesDict["Offline"],
+                    "Timeout": "30",
+                    "Record": "true",
+                    "RecordingStatusCallback": window.location.protocol +
+                        "//" +
+                        window.location.host +
+                        "/recording_callback",
+                    "ConferenceStatusCallback": window.location.protocol +
+                        "//" +
+                        window.location.host +
+                        "/conference_callback",
+                    "ConferenceStatusCallbackEvent": "start,end,join,leave"
+                };
+                console.log("Starting conference...");
+                console.log(options);
+
+                ReservationObject.conference(null,
+                    null,
+                    null,
+                    null,
+                    function(error, reservation) {
+                        if (error) {
+                            console.log(error.code);
+                            console.log(error.message);
+                        }
+                    },
+                    options
+                );
+
+                logger("Conference initiated!");
+                document.getElementById("btn_hangup").style.display = "inline";
+            }
+
+            document.getElementById("btn_reject").style.display = "none";
+            document.getElementById("btn_accept").style.display = "none";
+            document.getElementById("btn_online").style.display = "none";
+            document.getElementById("btn_offline").style.display = "none";
+            document.getElementById("btn_mute").style.display = "inline";
+            document.getElementById("btn_unmute").style.display = "inline";
+            document.getElementById("btn_escalate").style.display = "inline";
+
+            updateUIStatus("On a call", false);
+        }
+
+        function rejectReservation() {
+            ReservationObject.reject();
+            document.getElementById("btn_reject").style.display = "none";
+            document.getElementById("btn_accept").style.display = "none";
+            document.getElementById("btn_hangup").style.display = "none";
+        }
+
+        function transferCallBlind_Manager() {
+            //Initiate a blind transfer to a Manager
+            //Make a post request to /callTransfer with the from, to, agent and tasksid
+            // callTransfer endpoint will put customer on hold and create a new task/route call to manage
+            //  console.log(ReservationObject.task.sid);
+            $.post("/home/callTransfer",
+                {
+                    participant: ReservationObject.task.attributes.conference.participants.customer, //customer callSid
+                    conference: ReservationObject.task.attributes.conference.sid, //conference
+                    //todo: remove// customer: ReservationObject.task.attributes.conference.participants.customer, //customer callsid - consider removing
+                    taskSid: ReservationObject.task.sid, //tasksid for the call transfer
+                    selected_language: (ReservationObject.task.attributes.selected_language
+                        ? ReservationObject.task.attributes.selected_language
+                        : ''),
+                    from: (ReservationObject.task.attributes.from ? ReservationObject.task.attributes.from : '')
+                });
+        }
+
+        function muteCaller() {
+            $.post("/home/callmute",
+                {
+                    participant: ReservationObject.task.attributes.conference.participants.customer,
+                    conference: ReservationObject.task.attributes.conference.sid,
+                    muted: "True"
+                });
+        }
+
+        function unmuteCaller(customer) {
+            //post to /callmute end point with the customer callsid and conferenceSID
+            if (customer) {
+                $.post("/home/callmute",
+                    {
+                        participant: customer,
+                        conference: ReservationObject.task.attributes.conference,
+                        muted: "False"
+                    });
+
+            } else {
+                $.post("/home/callmute",
+                    {
+                        participant: ReservationObject.task.attributes.conference.participants.customer,
+                        conference: ReservationObject.task.attributes.conference.sid,
+                        muted: "False"
+                    });
+            }
+        }
+
+        function logger(message) {
+            var log = document.getElementById('log');
+            log.value += "\n> " + message;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        window.onload = function() {
+            // Initialize TaskRouter.js on page load using window.workerToken -
+            // a Twilio Capability token that was set from rendering the template with agents endpoint
+            logger("Initializing...");
+            var workToken = "@Html.Raw(ViewBag.worker_token)";
+            window.worker = new Twilio.TaskRouter.Worker(workToken);
+
+        registerTaskRouterCallbacks();
+        };
+    </script>
+</head>
+<body>
+<div class="content">
+    <h2>ACME agent desktop</h2>
+
+    <section id="worker_status">
+    </section>
+    <section>
+        <br/>
+        <button id="btn_accept" style="display:none;" class="btn" onclick="acceptReservation()">Accept</button>
+        <button id="btn_reject" style="display:none;" class="btn" onclick="rejectReservation()">Reject</button>
+        <button id="btn_escalate" style="display:none;" class="btn" onclick="transferCallBlind_Manager()">Escalate
+        </button>
+        <button id="btn_mute" style="display:none;" class="btn" onclick="muteCaller()">Mute</button>
+        <button id="btn_unmute" style="display:none;" class="btn" onclick="unmuteCaller()">Unmute</button>
+        <button id="btn_hangup" style="display:none;" class="btn" onclick="hangup();">Hangup</button>
+        <button id="btn_hangupManager" style="display:none;" class="btn" onclick="hangupManager();">Hangup</button>
+        <button id="btn_online" style="display:none;" class="btn" onclick="goAvailable()">Go Available</button>
+        <button id="btn_offline" class="btn" onclick="goOffline()">Go Offline</button>
+    </section>
+    <section class="log">
+    </section>
+    <br/>
+    <section>
+        <textarea id="log" contenteditable="false"></textarea>
+    </section>
+</div>
+</body>
+</html>
