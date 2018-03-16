@@ -16,10 +16,6 @@ This implements:
 - Call holding
 - Call transfers
 
-
-Install the requirements by running `pip install requirements.txt`
-Run the install script to create the basic contact center structure
-
 ## Setup
 1. Setup a new TwiML App https://www.twilio.com/console/voice/twiml/apps and point it to the domain where you deployed this app (add `/incoming_call` suffix): `https://YOUR_DOMAIN_HERE/incoming_call`
 2. Buy a Twilio number https://www.twilio.com/console/phone-numbers/incoming
