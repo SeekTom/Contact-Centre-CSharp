@@ -15,6 +15,7 @@ This implements:
 - Conference recording
 - Call holding
 - Call transfers
+- optional assignment_callback url implementation
 
 ## Setup
 1. Setup a new TwiML App https://www.twilio.com/console/voice/twiml/apps and point it to the domain where you deployed this app (add `/incoming_call` suffix): `https://YOUR_DOMAIN_HERE/incoming_call`
