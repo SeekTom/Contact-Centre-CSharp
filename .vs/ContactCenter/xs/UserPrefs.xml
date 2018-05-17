@@ -1,0 +1,15 @@
+﻿<Properties StartupConfiguration="{84ED1538-01FE-4F54-847F-C156409845E1}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ContactCenter/Web.config">
+    <Files>
+      <File FileName="ContactCenter/Controllers/HomeController.cs" Line="32" Column="80" />
+      <File FileName="ContactCenter/Web.config" Line="26" Column="45" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.ContactCenter PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
