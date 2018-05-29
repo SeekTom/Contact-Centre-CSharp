@@ -57,6 +57,7 @@
 /Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.csproj.CoreCompileInputs.cache
 /Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.dll
 /Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.pdb
+<<<<<<< HEAD
 /Users/tcurtis/Documents/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.csprojResolveAssemblyReference.cache
 /Users/tcurtis/Documents/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.csproj.CoreCompileInputs.cache
 /Users/tcurtis/Documents/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.dll
@@ -88,3 +89,5 @@
 /Users/tcurtis/Documents/Contact-Centre-CSharp/ContactCenter/bin/System.Web.WebPages.Razor.xml
 /Users/tcurtis/Documents/Contact-Centre-CSharp/ContactCenter/bin/Twilio.xml
 /Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.csprojResolveAssemblyReference.cache
+=======
+>>>>>>> 21836317f85761838e09974632a3d87e071cb0ec
