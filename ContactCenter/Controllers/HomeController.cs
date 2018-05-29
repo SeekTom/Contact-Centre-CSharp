@@ -30,13 +30,9 @@ namespace ContactCenter.Controllers
         protected string _sales_workflow = ConfigurationManager.AppSettings["TWILIO_ACME_SALES_WORKFLOW_SID"];
         protected string _billing_workflow = ConfigurationManager.AppSettings["TWILIO_ACME_BILLING_WORKFLOW_SID"];
         protected string _called_id = ConfigurationManager.AppSettings["TWILIO_ACME_CALLERID"];
-<<<<<<< HEAD
 		protected string _wrap_up_activity = ConfigurationManager.AppSettings["TWILIO_ACME_WRAP_UP_ACTIVITY"];
-=======
-        protected string _wrap_up_activity = ConfigurationManager.AppSettings[""]
->>>>>>> 21836317f85761838e09974632a3d87e071cb0ec
-      
-        class PolicyUrlUtils
+
+		class PolicyUrlUtils
         {
             const string taskRouterBaseUrl = "https://taskrouter.twilio.com";
             const string taskRouterVersion = "v1";
@@ -98,14 +94,10 @@ namespace ContactCenter.Controllers
 
             var enqueue = new Enqueue(workflowSid:workflowDictionary[Request.Params.Get("digits")]);
 
-<<<<<<< HEAD
-            enqueue.Task("{\"selected_product\": \"" + department[Request.Params.Get("digits")] + "\"}");
-=======
-            enqueue.Task("{'selected_product':'@" + department[Request.Params.Get("digits")] + @"'}");
->>>>>>> 21836317f85761838e09974632a3d87e071cb0ec
-            
-              
-            response.Append(enqueue);
+			enqueue.Task("{\"selected_product\": \"" + department[Request.Params.Get("digits")] + "\"}");
+
+
+			response.Append(enqueue);
             return Content(response.ToString(), contentType: "text/xml");
            
             
@@ -128,11 +120,6 @@ namespace ContactCenter.Controllers
 			ViewBag.voice_worker = workers;
 
             TwilioClient.Init(_accountSid, _authToken);
-
-            var workers = WorkerResource.Read(
-                targetWorkersExpression: "worker.channel.voice.configured_capacity > 0",
-                pathWorkspaceSid: _workspaceSid
-            );
 
             foreach (var vw in workers){
 
@@ -229,7 +216,6 @@ namespace ContactCenter.Controllers
             return Content(response.ToString(), contentType: "text/xml");
         }
        
-<<<<<<< HEAD
 
 		public ActionResult assignment_callback()
         {
@@ -249,27 +235,6 @@ namespace ContactCenter.Controllers
 			return Content(ret.ToString(), contentType: "application/json");
           
             
-=======
-		public ActionResult assignment_callback()
-        {
-
-            var wrap_up = "";
-
-            TwilioClient.Init(_accountSid, _authToken);
-
-            var task = Request.Params.Get("TaskSid");
-            var reservation = Request.Params.Get("ReservationSid");
-
-            var reservation_update = ReservationResource.Update(
-                _workspaceSid,
-                task,
-                reservation, ReservationResource.StatusEnum.Accepted);
-
-            var ret = "{'instruction':'dequeue', 'from': @" + _called_id + @",'post_work_activity_sid':'" + wrap_up + @"'}";
-
-            return View();
-
->>>>>>> 21836317f85761838e09974632a3d87e071cb0ec
         }
 
         public ActionResult Agent_desktop()
