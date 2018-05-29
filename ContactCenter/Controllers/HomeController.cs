@@ -118,15 +118,7 @@ namespace ContactCenter.Controllers
 			}
    
 			ViewBag.voice_worker = workers;
-
-            TwilioClient.Init(_accountSid, _authToken);
-
-            foreach (var vw in workers){
-
-                Console.Write(vw.Sid);
-            }
-   
-            ViewBag.voice_worker = workers;
+           
 
             return View();
             

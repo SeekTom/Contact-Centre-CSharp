@@ -1,8 +1,9 @@
 ﻿<Properties StartupConfiguration="{84ED1538-01FE-4F54-847F-C156409845E1}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="ContactCenter/Web.config">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ContactCenter/Views/Home/agent_list.cshtml">
     <Files>
-      <File FileName="ContactCenter/Controllers/HomeController.cs" Line="219" Column="1" />
-      <File FileName="ContactCenter/Web.config" Line="17" Column="5" />
+      <File FileName="ContactCenter/Controllers/HomeController.cs" Line="121" Column="12" />
+      <File FileName="ContactCenter/Web.config" Line="17" Column="1" />
+      <File FileName="ContactCenter/Views/Home/agent_list.cshtml" Line="16" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

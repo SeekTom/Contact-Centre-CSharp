@@ -7,19 +7,11 @@
 
 </head>
 <body>
-<<<<<<< HEAD
     <div id="workers">
         <h2>A selection of voice workers</h2>
        @foreach (var voiceWorker in @ViewBag.voice_worker)
         {<a href="/home/agent_desktop?WorkerSid=@voiceWorker.Sid"> @voiceWorker.FriendlyName </a> <font size="-1">(@voiceWorker.ActivityName)</font><br />
 }
-=======
-    <div id="workers">
-        <h2>A selection of voice workers</h2>
-       @foreach (var voiceWorker in @ViewBag.voice_worker)
-        {<a href="/home/agent_desktop?WorkerSid=@voiceWorker.Sid"> @voiceWorker.FriendlyName </a> <font size="-1">(@voiceWorker.ActivityName)</font><br />
-}
->>>>>>> 21836317f85761838e09974632a3d87e071cb0ec
     </div>
 
 </body>
