@@ -81,7 +81,7 @@ ViewBag.Title = "Agents";
         function hangup() {
             Twilio.Device.disconnectAll();
 
-            ReservationObject.task.complete();
+           ReservationObject.task.complete();
 
             worker.update("ActivitySid", activitiesDict["WrapUp"], function (error, worker) {
                 logger(worker.friendlyName + " has ended the call");
@@ -264,20 +264,15 @@ ViewBag.Title = "Agents";
                 console.log(ReservationObject);
 
                 console.log(window.location.protocol + "//" + window.location.host + "/home/transferTwiml?conference=" + ReservationObject.task.attributes.customer_taskSid)
+
+                ReservationObject.accept(); // Call instruction requires you to manually accept the Reservation prior to issuing the instruction
                 
                 ReservationObject.call(
                     // callFrom
                     "@Html.Raw(ViewBag.caller_id)",  // CC's phone number
                     // callUrl - URI that is executed on the answering Worker's leg
                     window.location.protocol + "//" + window.location.host + "/home/transferTwiml?conference=" + ReservationObject.task.attributes.customer_taskSid,
-                    // callStatusCallbackUrl (optional) - status callback url
-                 //   window.location.protocol + "//" + window.location.host + "/conference_callback",
-                    // callAccept (optional) - accept the task before initiating call
-                    "false",
-                    // callRecord (optional) - record-from-answer or false - false since we're already recoding the main conference
-                    "false",
-                    // resultCallback (optional) - a JavaScript Function that will be called upon the completion of the dial
-                    function (error, reservation) {
+                   function (error, reservation) {
                         if (error) {
                             console.log(error.code);
                             console.log(error.message);
@@ -287,7 +282,6 @@ ViewBag.Title = "Agents";
                     }
                 );
 
-                ReservationObject.accept(); // Call instruction requires you to manually accept the Reservation prior to issuing the instruction
                 
                 document.getElementById("btn_hangupManager").style.display = "inline";
                 document.getElementById("btn_escalate").style.display = "none";

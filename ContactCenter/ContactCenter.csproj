@@ -181,6 +181,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Web - prod.config" />
     <Content Include="Web.config" />
+    <Content Include="Views\Home\assignment_callback.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models" />
@@ -193,4 +194,11 @@
     <Target Name="AfterBuild">
     </Target>
     -->
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <XspParameters Port="8080" Address="127.0.0.1" SslMode="None" SslProtocol="Default" KeyType="None" CertFile="" KeyFile="" PasswordOptions="None" Password="" Verbose="True" />
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
