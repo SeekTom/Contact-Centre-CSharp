@@ -90,3 +90,4 @@
 /Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.csproj.CoreCompileInputs.cache
 /Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.dll
 /Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.pdb
+/Users/tcurtis/Documents/GitHub/Contact-Centre-CSharp/ContactCenter/obj/Debug/ContactCenter.csprojResolveAssemblyReference.cache

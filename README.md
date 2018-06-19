@@ -37,3 +37,13 @@ This implements:
   </appSettings>
 
 ```
+
+If you have a single workflow in your contact center simply add the same worflow sid to:
+
+```
+      <add key="TWILIO_ACME_MANAGER_WORKFLOW_SID" value="" />
+      <add key="TWILIO_ACME_SUPPORT_WORKFLOW_SID" value="" />
+      <add key="TWILIO_ACME_SALES_WORKFLOW_SID" value="" />
+      <add key="TWILIO_ACME_BILLING_WORKFLOW_SID" value="" />
+```
+This is not production code and is for information purposes only
