@@ -17,6 +17,10 @@ This implements:
 - Call transfers
 - optional assignment_callback url implementation
 
+This has been created in VS 2017 and so the newer Csproj file will not work in older versions, if you cannot upgrade to 2017 or later, you can open this project in VS Code:
+
+https://code.visualstudio.com/
+
 ## Setup
 1. Setup a new TwiML App https://www.twilio.com/console/voice/twiml/apps and point it to the domain where you deployed this app (add `/incoming_call` suffix): `https://YOUR_DOMAIN_HERE/incoming_call`
 2. Buy a Twilio number https://www.twilio.com/console/phone-numbers/incoming
