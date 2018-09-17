@@ -38,7 +38,7 @@ This implements:
 
 ```
 
-If you have a single workflow in your contact center simply add the same worflow sid to:
+If you have a single workflow in your contact center simply add the same worfklow sid to:
 
 ```
       <add key="TWILIO_ACME_MANAGER_WORKFLOW_SID" value="" />
