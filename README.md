@@ -22,7 +22,7 @@ This has been created in VS 2017 and so the newer Csproj file will not work in o
 https://code.visualstudio.com/
 
 ## Setup
-1. Setup a new TwiML App https://www.twilio.com/console/voice/twiml/apps and point it to the domain where you deployed this app (add `/incoming_call` suffix): `https://YOUR_DOMAIN_HERE/incoming_call`
+1. Setup a new TwiML App https://www.twilio.com/console/voice/twiml/apps and point it to the domain where you deployed this app (add `/incoming_call` suffix): `https://YOUR_DOMAIN_HERE/home/incoming_call`
 2. Buy a Twilio number https://www.twilio.com/console/phone-numbers/incoming
 3. Configure your number to point towards this TwiML App (Voice: Configure With: TwiML App)
 4. Define the following env variables in Web.config:
