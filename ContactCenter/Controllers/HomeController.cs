@@ -25,9 +25,7 @@ namespace ContactCenter.Controllers
         protected string  _authToken = ConfigurationManager.AppSettings["TWILIO_ACME_AUTH_TOKEN"];
         protected string _applicationSid =  ConfigurationManager.AppSettings["TWILIO_ACME_TWIML_APP_SID"];
         protected string _workspaceSid = ConfigurationManager.AppSettings["TWILIO_ACME_WORKSPACE_SID"];
-        protected string _manager_workflow = ConfigurationManager.AppSettings["TWILIO_ACME_MANAGER_WORKFLOW_SID"];
-        protected string _support_workflow = ConfigurationManager.AppSettings["TWILIO_ACME_SUPPORT_WORKFLOW_SID"];
-        protected string _sales_workflow = ConfigurationManager.AppSettings["TWILIO_ACME_SALES_WORKFLOW_SID"];
+        protected string _workflowSid = ConfigurationManager.AppSettings["TWILIO_ACME_WORKFLOW_SID"];
         protected string _billing_workflow = ConfigurationManager.AppSettings["TWILIO_ACME_BILLING_WORKFLOW_SID"];
         protected string _called_id = ConfigurationManager.AppSettings["TWILIO_ACME_CALLERID"];
 		protected string _wrap_up_activity = ConfigurationManager.AppSettings["TWILIO_ACME_WRAP_UP_ACTIVITY"];
@@ -87,12 +85,8 @@ namespace ContactCenter.Controllers
             department.Add("2", "support");
             department.Add("3", "billing");
     
-            Dictionary<string, string> workflowDictionary = new Dictionary<string, string>();
-            workflowDictionary.Add("1", _sales_workflow);
-            workflowDictionary.Add("2", _support_workflow);
-            workflowDictionary.Add("3", _billing_workflow);
-
-            var enqueue = new Enqueue(workflowSid:workflowDictionary[Request.Params.Get("digits")]);
+           
+            var enqueue = new Enqueue(workflowSid:_workflowSid);
 
 			enqueue.Task("{\"selected_product\": \"" + department[Request.Params.Get("digits")] + "\"}");
 
