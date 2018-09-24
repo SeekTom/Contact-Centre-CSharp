@@ -153,7 +153,7 @@ namespace ContactCenter.Controllers
 
                 var task = TaskResource.Create(
                     _workspaceSid, attributes: JsonConvert.DeserializeObject(json).ToString(),
-                    workflowSid: _manager_workflow
+                    workflowSid: _workflowSid
                 );
 
             }
