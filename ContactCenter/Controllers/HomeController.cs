@@ -26,9 +26,8 @@ namespace ContactCenter.Controllers
         protected string _applicationSid =  ConfigurationManager.AppSettings["TWILIO_ACME_TWIML_APP_SID"];
         protected string _workspaceSid = ConfigurationManager.AppSettings["TWILIO_ACME_WORKSPACE_SID"];
         protected string _workflowSid = ConfigurationManager.AppSettings["TWILIO_ACME_WORKFLOW_SID"];
-        protected string _billing_workflow = ConfigurationManager.AppSettings["TWILIO_ACME_BILLING_WORKFLOW_SID"];
         protected string _called_id = ConfigurationManager.AppSettings["TWILIO_ACME_CALLERID"];
-		protected string _wrap_up_activity = ConfigurationManager.AppSettings["TWILIO_ACME_WRAP_UP_ACTIVITY"];
+	protected string _wrap_up_activity = ConfigurationManager.AppSettings["TWILIO_ACME_WRAP_UP_ACTIVITY"];
 
 		class PolicyUrlUtils
         {
